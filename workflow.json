@@ -1,0 +1,336 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        156
+      ],
+      "id": "d5709a9e-8308-47a5-bc4e-6ac39f01a56c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -16,
+        348
+      ],
+      "id": "5692fa3c-388f-41fe-aabe-6d3120888f28",
+      "name": "When chat message received",
+      "webhookId": "568ecae8-ad72-47ff-b0c5-e93ed750e0dd"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        476
+      ],
+      "id": "a75211fa-c71b-4790-8e20-08450887e128",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5omqdih7YlT1cDwI",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "perform web search with a query",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        336,
+        476
+      ],
+      "id": "e51fe223-038b-4c6e-9ffd-1c9e77afe8e5",
+      "name": "webSearch",
+      "credentials": {
+        "tavilyApi": {
+          "id": "IJBEEB16WXUtu83L",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        768,
+        224
+      ],
+      "id": "6f2d2f52-a890-48f1-9f80-bbdc7790e821",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5omqdih7YlT1cDwI",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Your job is to summerize the linked in post so that in the future this post does not get repeated. The given post is : \n\n\n{{ $json.output }}\n\nNote : Make sure to only include enough info so that the post is not repeated again. \nThe output should be 3 to 5 lines at most. Dont focus on butifying the output. Just focus on making sure that it is clear and coveres the concepts of the post to avoid future repetations",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "67997f96-1fc9-4e38-8a02-91ce3f371a66",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "## ✅ **SYSTEM MESSAGE**\n\n**ROLE:**\nYou are a professional LinkedIn Post Generator Agent for a daily **100–150-day programming language challenge**. Also know that whatever your output is will be directly posted in linked in. So be sure to give the response appropriately\n\n**MISSION:**\n1️⃣ **Retrieve** what the user learned previously (from memory).\n • Use the **`getPosts`** tool to fetch a summary of all previous posts.\n2️⃣ **Search** for the next logical, deeper, or related concept in the same programming language — focus on practical, advanced, or intermediate topics that truly build expertise over time.\n • Use **`webSearch`** when needed to find up-to-date, relevant concepts.\n3️⃣ **Generate** a daily LinkedIn post that:\n ✅ Explains *what’s new* in a technically detailed way. The learning should be done from a memory point of view (Low level how things work)\n ✅ Shows *why it matters* for real-world coding.\n ✅ Provides a clear **code snippet** (well formatted, short, copy-ready).\n ✅ Highlights how this connects to what was learned before.\n ✅ Encourages others to share their thoughts or pro tips.\n ✅ Uses plenty of relevant hashtags for maximum reach.\n\n---\n\n**RULES:**\n\n* Keep the post under **300 words**.\n* Must include a **code snippet** inside a fenced block (` ``` `).\n* Use a clear, professional, but engaging tone — aim to teach **fellow devs**.\n* Add emojis naturally to emphasize 🔥📌💡.\n* Always end with a thoughtful question or challenge to engage comments.\n* Include at least **7–10 relevant hashtags**, for example:\n\n  * \\#100DaysOfCode\n  * \\#LearningInPublic\n  * \\#\\[LanguageName]\n  * \\#TechLearning\n  * \\#Programming\n  * \\#CodeNewbie\n  * \\#DevCommunity\n  * \\#SoftwareEngineering\n  * \\#CodeSnippet\n  * \\#\\[SpecificTopicTag] (e.g., #PythonTips)\n\n---\n\n**EXTRA INSTRUCTION:**\n\n* Focus on **technical accuracy**, depth, and practical learning.\n* Ensure the code snippet is **runnable** or clearly demonstrates the concept.\n* Keep track of covered concepts with **`getPosts`** to avoid repetition.\n* Use **`webSearch`** to find fresh, appropriate concepts when the next step is unclear.\n\n\nNote : \n - You must use the available tool to get google sheets data. \n- The output must be in MarkdownV2 format (Dont give the whole response in a code block).\n\nAvailable tools : \n- getPosts (returns all the previous posts)\n- webSearch (perform web search based on a query that you provide)"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        252
+      ],
+      "id": "bdc4b4bc-061e-4908-8bfc-231dc009e6f7",
+      "name": "PostCreator"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1sll62yGanYF9FdLAwp34FIey2Gr6YjB-JwWGm4OQIgk",
+          "mode": "list",
+          "cachedResultName": "LinkedInPostJava",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sll62yGanYF9FdLAwp34FIey2Gr6YjB-JwWGm4OQIgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sll62yGanYF9FdLAwp34FIey2Gr6YjB-JwWGm4OQIgk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "output": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "output"
+          ],
+          "schema": [
+            {
+              "id": "output",
+              "displayName": "output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1072,
+        104
+      ],
+      "id": "002071b3-2235-4bd1-a7c9-d7b3fe0a8201",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "M8Z14Pqu1Sg0Vf2L",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1sll62yGanYF9FdLAwp34FIey2Gr6YjB-JwWGm4OQIgk",
+          "mode": "list",
+          "cachedResultName": "LinkedInPostJava",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sll62yGanYF9FdLAwp34FIey2Gr6YjB-JwWGm4OQIgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sll62yGanYF9FdLAwp34FIey2Gr6YjB-JwWGm4OQIgk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        464,
+        476
+      ],
+      "id": "6403723e-228b-4fd0-bac8-14960d1aa6ab",
+      "name": "getPosts",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "M8Z14Pqu1Sg0Vf2L",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-4865856618",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        760,
+        400
+      ],
+      "id": "d86b555c-15b5-4667-9c05-9b48a235c6a4",
+      "name": "Send a text message",
+      "webhookId": "72bc03df-aae8-443e-befe-81b82be16e6d",
+      "credentials": {
+        "telegramApi": {
+          "id": "Br4LmCpdkeAHgrFR",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "PostCreator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "PostCreator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "PostCreator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "webSearch": {
+      "ai_tool": [
+        [
+          {
+            "node": "PostCreator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PostCreator": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "getPosts": {
+      "ai_tool": [
+        [
+          {
+            "node": "PostCreator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8f16d46c7bec5d39bcd76757b993329682b1463313122ab493ab184891c98fce"
+  }
+}
